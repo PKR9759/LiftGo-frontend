@@ -1,10 +1,10 @@
-// middleware.ts
+// proxy.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const protectedRoutes = ['/dashboard', '/profile', '/rides/new', '/bookings']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('liftgo_token')?.value
   const { pathname } = request.nextUrl
 
