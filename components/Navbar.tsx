@@ -2,27 +2,62 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { clearAuth, getUser, isLoggedIn } from '@/lib/auth'
 import { useEffect, useState } from 'react'
 
 export default function Navbar() {
-  const router = useRouter()
+  const router   = useRouter()
+  const pathname = usePathname()
+
   const [loggedIn, setLoggedIn] = useState(false)
   const [userName, setUserName] = useState('')
+  const [mounted, setMounted]   = useState(false)
 
+  // only read localStorage after mount — never during SSR
   useEffect(() => {
+    setMounted(true)
     setLoggedIn(isLoggedIn())
     const user = getUser()
     if (user) setUserName(user.name)
   }, [])
 
+  // re-check auth state on every route change
+  // this catches the login redirect and updates the navbar
+  useEffect(() => {
+    if (!mounted) return
+    setLoggedIn(isLoggedIn())
+    const user = getUser()
+    setUserName(user?.name ?? '')
+  }, [pathname, mounted])
+
   const handleLogout = () => {
     clearAuth()
     setLoggedIn(false)
+    setUserName('')
     router.push('/')
     router.refresh()
+  }
+
+  // render nothing auth-related until mounted
+  // prevents server/client mismatch flash
+  if (!mounted) {
+    return (
+      <nav className="border-b bg-white sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+          <Link href="/" className="text-xl font-bold text-slate-900">
+            LiftGo
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/rides" className="text-sm text-slate-600 hover:text-slate-900 transition-colors">
+              Find a ride
+            </Link>
+          </div>
+          <div className="w-32" /> {/* placeholder to prevent layout shift */}
+        </div>
+      </nav>
+    )
   }
 
   return (

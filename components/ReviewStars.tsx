@@ -1,4 +1,7 @@
 // components/ReviewStars.tsx
+
+'use client'
+
 interface Props {
     rating:   number
     max?:     number

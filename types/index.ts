@@ -32,18 +32,19 @@ export interface User {
   }
   
   export interface Booking {
-    id: string
-    ride_id: string
-    rider_id: string
-    rider_name: string
-    driver_name: string
-    origin_city: string
+    id:               string
+    ride_id:          string
+    rider_id:         string
+    rider_name:       string
+    driver_id:        string   
+    driver_name:      string
+    origin_city:      string
     destination_city: string
-    departure_at: string
-    seats: number
-    status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-    total_price: number
-    created_at: string
+    departure_at:     string
+    seats:            number
+    status:           'pending' | 'confirmed' | 'cancelled' | 'completed'
+    total_price:      number
+    created_at:       string
   }
   
   export interface Review {
